@@ -1,12 +1,17 @@
 from django.shortcuts import HttpResponse
 from starstone_db_manager.settings import NATIVE_MYSQL_DATABASES
+from .db_queries import get_autoincrement, get_card_by_id, execute, insert, card_stats_from_query
 # Create your views here.
 import pymysql.cursors
 import json
 from django.views.decorators.csrf import csrf_exempt
+import logging 
+
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def main_manage_page(request):
+    
     cardStats = {
         "id": 1,
         "Name": "Name",
@@ -23,53 +28,6 @@ def main_manage_page(request):
         "error": error
     }
 
-    
-    # check downloadAll
-
-    # return process_download_all(request, cardData)
-    
-    # check download
-    
-    # if not request.POST._mutable:
-    #     request.POST._mutable = True
-    # request.POST["id"] = 26
-    # return process_download(request, cardData)   
-
-    # check upload
-
-    # if not request.POST._mutable:
-    #     request.POST._mutable = True
-    # request.POST["request-type"] = "Upload"
-    # request.POST["name"] = "bad"
-    # request.POST["desc"] = ""
-    # request.POST["mana-cost"] = ""
-    # request.POST["health"] = ""
-    # request.POST["attack"] = ""
-    # request.POST["race"] = ""
-    # request.POST["card-type"] = ""
-    # request.POST["play-style"] = ""
-    # return process_upload(request, cardData)
-    
-    # check delete
-
-
-    # print(get_autoincrement())
-
-    # if not request.POST._mutable:
-    #     request.POST._mutable = True
-    
-    # request.POST["id"] = 26
-    # return process_delete(request, cardData)   
-
-    # query = """SELECT * FROM starstoneapp.cardstats"""
-    # r = execute(NATIVE_MYSQL_DATABASES['default'], query, {})
- 
-    # cardData["cardStats"] = []
-    # for card in r:
-    #     cardData["cardStats"].append(card_stats_from_query(card))
-    # return HttpResponse(json.dumps(cardData))
-    # print(request)
-
     if not request.method == "POST":
         set_error(cardData, "waiting for POST request")
         return HttpResponse(json.dumps(cardData))
@@ -79,6 +37,7 @@ def main_manage_page(request):
         return HttpResponse(json.dumps(cardData))
         
     request_type = request.POST.get("request-type")
+    log_request(request)
 
     if request_type == "DownloadAll":
         return process_download_all(request, cardData)
@@ -91,6 +50,9 @@ def main_manage_page(request):
     else:
         set_error(cardData, f"Following request type is not supported {request_type}")
         return HttpResponse(json.dumps(cardData))
+
+def log_request(request):
+    logger.info(f"Receiveing request: {request.POST}")
 
 def process_download_all(request, cardData):
     query = """SELECT * FROM starstoneapp.cardstats;"""
@@ -116,18 +78,6 @@ def process_download(request, cardData):
     cardData["cardStats"] = card 
     return HttpResponse(json.dumps(cardData))
 
-def get_card_by_id(i):
-    query = """SELECT * FROM starstoneapp.cardstats WHERE id = %(card_id)s;"""
-    params = {
-        "card_id": i
-    }
-    r = execute(NATIVE_MYSQL_DATABASES['default'], query, params)
-    
-    if (r == []):
-        return None
-
-    return card_stats_from_query(r[0])
-
 def check_for_valid_upload(request):
     form_params = [
         "request-type",
@@ -148,21 +98,6 @@ def check_for_valid_upload(request):
             is_error = True
             error += param + "; "
     return is_error, error
-
-def card_stats_from_query(query):
-
-    cardStats = {}
-    cardStats["id"] = query[0]
-    cardStats["Name"] = query[1]
-    cardStats["Desc"] = query[2]
-    cardStats["Health"] = query[3]
-    cardStats["ManaCost"] = query[5]
-    cardStats["Attack"] = query[6]
-    cardStats["Race"] = query[7]
-    cardStats["Type"] = query[8]
-    cardStats["PlayStyle"] = query[9]
-    
-    return cardStats
 
 # check params
 # get card
@@ -246,38 +181,10 @@ VALUES (%(name)s, %(desc)s, %(mana-cost)s, %(health)s, %(attack)s, %(race)s, %(c
     else:
         set_error(cardData, "Card already exists")
     return HttpResponse(json.dumps(cardData))
-
-def execute(database_dict: dict, query: str, params: dict) -> list[tuple]:
-    connection = pymysql.connect(**database_dict)
-    cursor = connection.cursor()
-    # cursor.reset()
-    cursor.execute(query, params)
-    r = cursor.fetchall()
-    connection.close()
-
-    return r
-
-def insert(database_dict: dict, query: str, params: dict) -> None:
-    connection = pymysql.connect(**database_dict)
-    cursor = connection.cursor()
-    message = ""
-    try:
-        cursor.execute(query, params)
-        connection.commit()
-        connection.close()
-        return None
-    except Exception as e:
-        connection.rollback()
-        connection.close()
-        if hasattr(e, 'message'):
-            return e.message
-        else:
-            return str(e)
-
-
-    
+   
 
 def set_error(cardData: dict, error_text : str) -> None:
     cardData["cardStats"] = None;
     cardData["error"]["isError"] = True;
     cardData["error"]["errorText"] = "Error: " + error_text;
+    logger.error(error_text)

@@ -91,8 +91,8 @@ NATIVE_MYSQL_DATABASES = {
         "user": "card_man",
         "password": 'KekeIsStarstone',
         "port": 3306,
-        # "host": "db",
-        "host": "localhost",
+        "host": "db",
+        # "host": "localhost",
         
     }
 }

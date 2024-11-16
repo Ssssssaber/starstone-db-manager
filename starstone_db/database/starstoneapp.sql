@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Ноя 14 2024 г., 09:35
--- Версия сервера: 10.4.32-MariaDB
+-- Время создания: Ноя 16 2024 г., 14:11
+-- Версия сервера: 11.5.2-MariaDB
 -- Версия PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -29,15 +29,15 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `cardstats` (
   `id` int(11) NOT NULL,
-  `Name` varchar(512) NOT NULL,
-  `Description` varchar(512) NOT NULL,
-  `Health` int(11) NOT NULL,
-  `Shield` int(11) NOT NULL,
-  `ManaCost` int(11) NOT NULL,
-  `Attack` int(11) NOT NULL,
-  `Race` enum('Terran','Zerg','Protoss') NOT NULL,
-  `Type` enum('Creature','Spell') NOT NULL,
-  `PlayStyle` enum('Offensive','Defensive','Versatile') NOT NULL
+  `Name` varchar(512) NOT NULL DEFAULT 'keke',
+  `Description` varchar(512) NOT NULL DEFAULT 'is you',
+  `Health` int(11) NOT NULL DEFAULT 1,
+  `Shield` int(11) DEFAULT 0,
+  `ManaCost` int(11) NOT NULL DEFAULT 1,
+  `Attack` int(11) NOT NULL DEFAULT 1,
+  `Race` enum('Terran','Zerg','Protoss') NOT NULL DEFAULT 'Zerg',
+  `Type` enum('Creature','Spell') NOT NULL DEFAULT 'Creature',
+  `PlayStyle` enum('Offensive','Defensive','Versatile') NOT NULL DEFAULT 'Versatile'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -62,7 +62,8 @@ INSERT INTO `cardstats` (`id`, `Name`, `Description`, `Health`, `Shield`, `ManaC
 (15, 'Transcendence', 'keke', 0, 0, 2, 0, 'Protoss', 'Spell', 'Versatile'),
 (16, 'Transfuse', 'Regen 2 hp an 2 hp on the next turn', 0, 0, 2, 3, 'Zerg', 'Spell', 'Defensive'),
 (17, 'Baneling', 'Explodes on dying, dealing 1 damage to all enemy units', 1, 0, 2, 1, 'Zerg', 'Creature', 'Versatile'),
-(18, 'Orbital Strike', 'Deals 2 damage to enemy creatures', 0, 0, 3, 2, 'Protoss', 'Spell', 'Defensive');
+(18, 'Orbital Strike', 'Deals 2 damage to enemy creatures', 0, 0, 3, 2, 'Protoss', 'Spell', 'Defensive'),
+(23, 'Keke', 'is you', 3, 0, 3, 3, 'Zerg', 'Creature', '');
 
 --
 -- Индексы сохранённых таблиц
@@ -82,7 +83,7 @@ ALTER TABLE `cardstats`
 -- AUTO_INCREMENT для таблицы `cardstats`
 --
 ALTER TABLE `cardstats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
