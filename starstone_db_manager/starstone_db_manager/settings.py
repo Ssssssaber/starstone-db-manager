@@ -75,14 +75,14 @@ WSGI_APPLICATION = "starstone_db_manager.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "starstoneapp",
-        "USER": "card_man",
-        "PASSWORD": 'KekeIsStarstone',
-        "PORT": "3306",
-        "HOST": "localhost"
-    }
+    # "default": {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "NAME": "starstoneapp",
+    #     "USER": "card_man",
+    #     "PASSWORD": 'KekeIsStarstone',
+    #     "PORT": "3309",
+    #     "HOST": "localhost"
+    # }
 }
 
 NATIVE_MYSQL_DATABASES = {
@@ -90,8 +90,10 @@ NATIVE_MYSQL_DATABASES = {
         "database": "starstoneapp",
         "user": "card_man",
         "password": 'KekeIsStarstone',
-        "port": "3306",
-        "host": "localhost"
+        "port": 3306,
+        # "host": "db",
+        "host": "localhost",
+        
     }
 }
 

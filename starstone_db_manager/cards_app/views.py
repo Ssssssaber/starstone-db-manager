@@ -1,13 +1,12 @@
 from django.shortcuts import HttpResponse
 from starstone_db_manager.settings import NATIVE_MYSQL_DATABASES
 # Create your views here.
-from mysql.connector import Connect
+import pymysql.cursors
 import json
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def main_manage_page(request):
-
-    
-
     cardStats = {
         "id": 1,
         "Name": "Name",
@@ -23,6 +22,8 @@ def main_manage_page(request):
         "cardStats": cardStats,
         "error": error
     }
+
+    
     # check downloadAll
 
     # return process_download_all(request, cardData)
@@ -247,33 +248,33 @@ VALUES (%(name)s, %(desc)s, %(mana-cost)s, %(health)s, %(attack)s, %(race)s, %(c
     return HttpResponse(json.dumps(cardData))
 
 def execute(database_dict: dict, query: str, params: dict) -> list[tuple]:
-
-    cnx = Connect(**database_dict)
-    cur = cnx.cursor()
-    cur.reset()
-
-    cur.execute(query, params = params)
-    r = cur.fetchall()
-    cnx.close()
+    connection = pymysql.connect(**database_dict)
+    cursor = connection.cursor()
+    # cursor.reset()
+    cursor.execute(query, params)
+    r = cursor.fetchall()
+    connection.close()
 
     return r
 
 def insert(database_dict: dict, query: str, params: dict) -> None:
-    cnx = Connect(**database_dict)
-    cur = cnx.cursor()
+    connection = pymysql.connect(**database_dict)
+    cursor = connection.cursor()
     message = ""
     try:
-        cur.execute(query, params = params)
-        cnx.commit()
-        cnx.close()
+        cursor.execute(query, params)
+        connection.commit()
+        connection.close()
         return None
     except Exception as e:
-        cnx.rollback()
-        cnx.close()
+        connection.rollback()
+        connection.close()
         if hasattr(e, 'message'):
             return e.message
         else:
             return str(e)
+
+
     
 
 def set_error(cardData: dict, error_text : str) -> None:
