@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Ноя 16 2024 г., 14:11
+-- Время создания: Ноя 17 2024 г., 09:55
 -- Версия сервера: 11.5.2-MariaDB
 -- Версия PHP: 8.2.12
 
@@ -62,8 +62,7 @@ INSERT INTO `cardstats` (`id`, `Name`, `Description`, `Health`, `Shield`, `ManaC
 (15, 'Transcendence', 'keke', 0, 0, 2, 0, 'Protoss', 'Spell', 'Versatile'),
 (16, 'Transfuse', 'Regen 2 hp an 2 hp on the next turn', 0, 0, 2, 3, 'Zerg', 'Spell', 'Defensive'),
 (17, 'Baneling', 'Explodes on dying, dealing 1 damage to all enemy units', 1, 0, 2, 1, 'Zerg', 'Creature', 'Versatile'),
-(18, 'Orbital Strike', 'Deals 2 damage to enemy creatures', 0, 0, 3, 2, 'Protoss', 'Spell', 'Defensive'),
-(23, 'Keke', 'is you', 3, 0, 3, 3, 'Zerg', 'Creature', '');
+(18, 'Orbital Strike', 'Deals 2 damage to enemy creatures', 0, 0, 3, 2, 'Protoss', 'Spell', 'Defensive');
 
 --
 -- Индексы сохранённых таблиц
@@ -73,7 +72,9 @@ INSERT INTO `cardstats` (`id`, `Name`, `Description`, `Health`, `Shield`, `ManaC
 -- Индексы таблицы `cardstats`
 --
 ALTER TABLE `cardstats`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `id_2` (`id`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -83,7 +84,7 @@ ALTER TABLE `cardstats`
 -- AUTO_INCREMENT для таблицы `cardstats`
 --
 ALTER TABLE `cardstats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

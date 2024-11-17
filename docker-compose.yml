@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     build: ./starstone_db_manager
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 --noreload
     ports:
       - '8000:8000'
     depends_on:

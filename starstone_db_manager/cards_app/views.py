@@ -9,6 +9,31 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from enum import Enum
+
+# class syntax
+
+class Type(Enum):
+    Creature = 1
+    Spell = 2
+
+class Race(Enum):
+    Terran = 1
+    Zerg = 2
+    Protoss = 3
+
+class PlayStyle(Enum):
+    Offensive = 1
+    Defensive = 2
+    Versatile = 3
+
+def check_type(poss_type, enum_class):
+    try:
+        keke = enum_class[poss_type]
+        return True
+    except Exception as e:
+        return False
+
 @csrf_exempt
 def main_manage_page(request):
     
@@ -167,9 +192,23 @@ VALUES (%(name)s, %(desc)s, %(mana-cost)s, %(health)s, %(attack)s, %(race)s, %(c
             "card-type": request.POST.get("card-type"),
             "play-style": request.POST.get("play-style")
         }
+
+        if not (check_type(params['race'], Race)):
+            set_error(cardData, "Wrong race")
+            return HttpResponse(json.dumps(cardData))
+            
+        if not (check_type(params['card-type'], Type)):
+            set_error(cardData, "Wrong card type")
+            return HttpResponse(json.dumps(cardData))
+
+        if not (check_type(params['play-style'], PlayStyle)):
+            set_error(cardData, "Wrong play style")
+            return HttpResponse(json.dumps(cardData))
+
         error = insert(NATIVE_MYSQL_DATABASES['default'], query, params)
         if (error != None):
-                set_error(cardData, error) 
+            set_error(cardData, error) 
+            return HttpResponse(json.dumps(cardData))
 
         card_id = get_autoincrement()
         card = get_card_by_id(card_id)
