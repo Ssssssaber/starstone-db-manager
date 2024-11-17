@@ -1,2 +1,2 @@
 # starstone-db-manager
-Database manager for a Hearthstone-liike card game Starstone
+Database manager for a Hearthstone-like card game Starstone
